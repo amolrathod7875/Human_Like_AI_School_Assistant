@@ -35,6 +35,11 @@ backend/
 └── README.md
 ```
 
+## Modules
+
+- **auth** (`app/auth`): Firebase ID-token verification, `AuthenticatedUser`, and the
+  reusable `get_authenticated_user` dependency. See [`app/auth/README.md`](app/auth/README.md).
+
 ## Running locally
 
 ```powershell

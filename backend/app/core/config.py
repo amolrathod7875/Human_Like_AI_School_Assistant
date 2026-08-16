@@ -34,6 +34,11 @@ class Settings(BaseSettings):
     # Request identity
     REQUEST_ID_HEADER: str = "X-Request-ID"
 
+    # Firebase Authentication (service-account credentials, never hardcoded)
+    FIREBASE_PROJECT_ID: Optional[str] = None
+    FIREBASE_CLIENT_EMAIL: Optional[str] = None
+    FIREBASE_PRIVATE_KEY: Optional[str] = None
+
 
 def get_settings() -> Settings:
     """Return the cached application settings."""

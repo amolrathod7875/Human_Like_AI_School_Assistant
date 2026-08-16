@@ -3,6 +3,7 @@ uvicorn[standard]>=0.29,<1.0
 pydantic>=2.6,<3.0
 pydantic-settings>=2.2,<3.0
 python-dotenv>=1.0,<2.0
+firebase-admin>=6.2,<7.0
 
 # Test dependencies
 pytest>=8.0,<9.0
