@@ -93,6 +93,13 @@ backend/
   `POST /api/v1/escalation/request` and `GET /api/v1/escalation/{request_id}`, and
   as the `create_teacher_contact_request` / `create_management_contact_request`
   orchestrator tools. See [`app/services/README.md`](app/services/README.md).
+- **Vapi voice integration** (`app/providers/vapi`, `app/services/voice_service`,
+  `app/api/v1/voice`): Vapi provider/adapter (signature-verified webhook,
+  transcript + response normalization), a voice service that converges speech
+  into the same orchestrator as chat, and two endpoints —
+  `POST /api/v1/voice/webhook` (Vapi server URL) and
+  `POST /api/v1/voice/respond` (bearer-authenticated). See
+  [`app/providers/vapi/README.md`](app/providers/vapi/README.md).
 
 ## Running locally
 
@@ -200,4 +207,5 @@ header emission.
 
 ## Out of scope (owned by other modules)
 
-Firebase auth, Firestore, Cohere, Vapi, AI orchestration, frontend.
+Firebase auth, Firestore, Cohere, AI orchestration, frontend. (Vapi voice
+integration is implemented under `app/providers/vapi` and `app/api/v1/voice`.)

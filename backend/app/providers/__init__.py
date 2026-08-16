@@ -13,6 +13,17 @@ from app.providers.cohere import (
 )
 from app.providers.firebase_provider import get_firebase_app
 from app.providers.firestore_provider import get_firestore_client
+from app.providers.vapi import (
+    VapiAdapter,
+    VapiSignatureVerifier,
+    VapiWebhookVerifier,
+    NoopVerifier,
+    NormalizedVoiceEvent,
+    get_vapi_adapter,
+    set_vapi_adapter,
+    get_vapi_webhook_verifier,
+    set_vapi_webhook_verifier,
+)
 
 __all__ = [
     "get_firebase_app",
@@ -28,4 +39,13 @@ __all__ = [
     "LLMToolCall",
     "get_llm_provider",
     "set_llm_provider",
+    "VapiAdapter",
+    "VapiSignatureVerifier",
+    "VapiWebhookVerifier",
+    "NoopVerifier",
+    "NormalizedVoiceEvent",
+    "get_vapi_adapter",
+    "set_vapi_adapter",
+    "get_vapi_webhook_verifier",
+    "set_vapi_webhook_verifier",
 ]

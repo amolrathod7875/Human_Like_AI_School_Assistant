@@ -29,7 +29,13 @@ def normalize_language(language: Optional[str]) -> str:
     if not language:
         return _FALLBACK_CODE
     key = language.strip().lower()
-    return _ALIAS_MAP.get(key, _FALLBACK_CODE)
+    if key in _ALIAS_MAP:
+        return _ALIAS_MAP[key]
+    # Accept locale tags (e.g. "hi-IN") by falling back to the base language.
+    base = key.split("-")[0]
+    if base in _ALIAS_MAP:
+        return _ALIAS_MAP[base]
+    return _FALLBACK_CODE
 
 
 def get_language_instruction(language: Optional[str]) -> str:
