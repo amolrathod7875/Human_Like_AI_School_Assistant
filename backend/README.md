@@ -69,6 +69,13 @@ backend/
   execution pipeline (exists → validate args → authorize → execute → validate
   result). Provider-independent (no Cohere import). See
   [`app/ai/tools/README.md`](app/ai/tools/README.md).
+- **attendance domain** (`app/services/attendance_service`): `get_student_attendance`,
+  `get_child_attendance`, `mark_attendance`, `get_overall_attendance`, and
+  `resolve_student_reference` (handles duplicate-name ambiguity). Enforces the
+  Section 05 policies; `teacher_id` is taken from the stored identity, not the
+  request body. Four AI tool adapters (`get_own_attendance`, `get_child_attendance`,
+  `get_overall_attendance`, `mark_attendance`) and REST routes under
+  `/api/v1/attendance`. See [`app/services/README.md`](app/services/README.md).
 
 ## Running locally
 
@@ -176,4 +183,4 @@ header emission.
 
 ## Out of scope (owned by other modules)
 
-Firebase auth, Firestore, Cohere, Vapi, attendance, AI orchestration, frontend.
+Firebase auth, Firestore, Cohere, Vapi, AI orchestration, frontend.

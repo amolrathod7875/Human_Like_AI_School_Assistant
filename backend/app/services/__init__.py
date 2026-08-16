@@ -1,3 +1,10 @@
+from app.services.attendance_service import (
+    get_child_attendance,
+    get_overall_attendance,
+    get_student_attendance,
+    mark_attendance,
+    resolve_student_reference,
+)
 from app.services.conversation_service import (
     ConversationContext,
     append_message,
@@ -22,6 +29,11 @@ __all__ = [
     "get_children_for_parent",
     "get_teacher_classes",
     "is_active_user",
+    "get_student_attendance",
+    "get_child_attendance",
+    "mark_attendance",
+    "get_overall_attendance",
+    "resolve_student_reference",
     "create_conversation",
     "get_conversation",
     "append_message",

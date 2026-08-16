@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.ai.tools.register_builtins import bootstrap_tools
 from app.api.v1 import api_router
 from app.core.config import settings
 from app.core.errors import AppError, RequestContext
@@ -19,6 +20,7 @@ logger = get_logger("app.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Starting %s (env=%s)", settings.SERVICE_NAME, settings.ENVIRONMENT)
+    bootstrap_tools()
     yield
     logger.info("Shutting down %s", settings.SERVICE_NAME)
 

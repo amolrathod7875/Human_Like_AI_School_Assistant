@@ -19,3 +19,6 @@ class StudentRepository(FirestoreRepository[StudentProfile]):
         return self.list(
             filters=[("parent_ids", "array_contains", parent_id)], **kwargs
         )
+
+    def list_by_name(self, name: str, **kwargs) -> Page[StudentProfile]:
+        return self.list(filters=[("name", "==", name)], **kwargs)
