@@ -60,6 +60,10 @@ backend/
   `LLMRequest`/`LLMResponse`, `CohereProvider` (SDK wrapper, timeouts, retries,
   error/response mapping), and `MockLLMProvider`. See
   [`app/providers/cohere/README.md`](app/providers/cohere/README.md).
+- **persona + language manager** (`app/ai/persona`): `get_persona`,
+  `normalize_language`, `get_language_instruction`. Role-based tone/phrasing
+  only; safe English fallback for unsupported languages. See
+  [`app/ai/persona/README.md`](app/ai/persona/README.md).
 
 ## Running locally
 
