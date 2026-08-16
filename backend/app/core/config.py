@@ -45,6 +45,10 @@ class Settings(BaseSettings):
     COHERE_TIMEOUT: int = 30
     COHERE_MAX_RETRIES: int = 1
 
+    # AI orchestrator (no secrets; tuning only)
+    AI_CONTEXT_MESSAGE_LIMIT: int = 10  # conversation turns given to the model
+    AI_MAX_TOOL_CALLS: int = 3  # tool calls allowed in a single turn
+
 
 def get_settings() -> Settings:
     """Return the cached application settings."""

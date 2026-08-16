@@ -24,7 +24,7 @@ backend/
 │   ├── services/            # (reserved for other modules)
 │   ├── repositories/        # (reserved)
 │   ├── providers/           # (reserved, adapters for external services)
-│   ├── ai/                  # (reserved)
+│   ├── ai/                  # persona/language, tool registry, orchestrator
 │   ├── auth/                # (reserved)
 │   └── schemas/             # (reserved)
 ├── tests/                   # pytest suite + conftest
@@ -76,6 +76,12 @@ backend/
   request body. Four AI tool adapters (`get_own_attendance`, `get_child_attendance`,
   `get_overall_attendance`, `mark_attendance`) and REST routes under
   `/api/v1/attendance`. See [`app/services/README.md`](app/services/README.md).
+- **AI orchestrator** (`app/ai/orchestrator`): `handle_message` — the central
+  natural-language turn (conversation → persona/language → Cohere intent decision
+  → validated registry tool call with authorization → natural response →
+  persisted messages → structured response with avatar hint), exposed as
+  `POST /api/v1/ai/chat`. Never the authorization authority. See
+  [`app/ai/orchestrator/README.md`](app/ai/orchestrator/README.md).
 
 ## Running locally
 

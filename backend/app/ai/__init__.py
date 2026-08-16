@@ -1,3 +1,9 @@
+from app.ai.orchestrator import (
+    ChatRequest,
+    ChatResponse,
+    Intent,
+    handle_message,
+)
 from app.ai.persona import (
     Persona,
     get_language_instruction,
@@ -10,4 +16,8 @@ __all__ = [
     "get_persona",
     "normalize_language",
     "get_language_instruction",
+    "handle_message",
+    "ChatRequest",
+    "ChatResponse",
+    "Intent",
 ]
