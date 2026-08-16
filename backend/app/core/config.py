@@ -39,6 +39,12 @@ class Settings(BaseSettings):
     FIREBASE_CLIENT_EMAIL: Optional[str] = None
     FIREBASE_PRIVATE_KEY: Optional[str] = None
 
+    # Cohere LLM provider (API key is a secret; provide via env / secret manager)
+    COHERE_API_KEY: Optional[str] = None
+    COHERE_MODEL: str = "command-r-plus"
+    COHERE_TIMEOUT: int = 30
+    COHERE_MAX_RETRIES: int = 1
+
 
 def get_settings() -> Settings:
     """Return the cached application settings."""

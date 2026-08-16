@@ -56,6 +56,10 @@ backend/
   enforced via the authorization context; messages stored in the
   `conversations/{id}/messages` subcollection. See
   [`app/services/README.md`](app/services/README.md).
+- **Cohere LLM provider** (`app/providers/cohere`): `LLMProvider` interface,
+  `LLMRequest`/`LLMResponse`, `CohereProvider` (SDK wrapper, timeouts, retries,
+  error/response mapping), and `MockLLMProvider`. See
+  [`app/providers/cohere/README.md`](app/providers/cohere/README.md).
 
 ## Running locally
 

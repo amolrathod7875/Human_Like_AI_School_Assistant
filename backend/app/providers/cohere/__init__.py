@@ -1,22 +1,20 @@
-from app.providers.cohere import (
-    CohereProvider,
+from app.providers.cohere.errors import LLMProviderError
+from app.providers.cohere.models import (
     LLMMessage,
-    LLMProvider,
-    LLMProviderError,
     LLMRequest,
     LLMResponse,
     LLMToolCall,
     LLMToolDefinition,
-    MockLLMProvider,
+)
+from app.providers.cohere.mock import MockLLMProvider
+from app.providers.cohere.protocol import LLMProvider
+from app.providers.cohere.provider import (
+    CohereProvider,
     get_llm_provider,
     set_llm_provider,
 )
-from app.providers.firebase_provider import get_firebase_app
-from app.providers.firestore_provider import get_firestore_client
 
 __all__ = [
-    "get_firebase_app",
-    "get_firestore_client",
     "LLMProvider",
     "CohereProvider",
     "MockLLMProvider",
