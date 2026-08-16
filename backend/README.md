@@ -64,6 +64,11 @@ backend/
   `normalize_language`, `get_language_instruction`. Role-based tone/phrasing
   only; safe English fallback for unsupported languages. See
   [`app/ai/persona/README.md`](app/ai/persona/README.md).
+- **AI tool registry** (`app/ai/tools`): `AITool`/`BaseTool`, `register_tool`,
+  `get_tool`, `list_tools`, `list_tool_definitions`, `execute_tool`, and a typed
+  execution pipeline (exists → validate args → authorize → execute → validate
+  result). Provider-independent (no Cohere import). See
+  [`app/ai/tools/README.md`](app/ai/tools/README.md).
 
 ## Running locally
 
