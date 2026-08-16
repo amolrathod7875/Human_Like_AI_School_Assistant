@@ -1,0 +1,139 @@
+# XYZ AI — Kilo Code Task
+
+## Global Rules
+
+This file is one independent backend work package for XYZ AI.
+
+You are one coder in a multi-coder development workflow. Implement ONLY the scope defined in this file.
+
+### Mandatory rules
+
+1. Do not rewrite unrelated modules.
+2. Do not silently change shared contracts.
+3. Never hardcode secrets.
+4. Never log API keys, tokens, passwords, or private keys.
+5. Use the existing Python/FastAPI architecture.
+6. Use typed Pydantic schemas where applicable.
+7. Keep external providers behind adapters/interfaces.
+8. The LLM must never directly access Firestore.
+9. The LLM must never be the final authorization authority.
+10. Never trust a client-supplied role.
+11. Do not add RAG or a vector database.
+12. Do not build frontend code.
+13. Write tests for the module you implement.
+14. Update module documentation/README where appropriate.
+15. Do not introduce paid services.
+16. At completion, provide a handoff report:
+    - files created
+    - files modified
+    - APIs added
+    - interfaces added
+    - Firestore collections touched
+    - environment variables required
+    - dependencies added
+    - tests added
+    - integration dependencies
+    - known limitations
+    - contract changes, if any
+
+## Locked Stack
+
+```text
+Coding              Kilo Code
+Backend             Python + FastAPI
+LLM                 Cohere API
+STT / TTS           Vapi
+Authentication      Firebase Authentication
+Database            Firebase Firestore
+Backend Hosting     Hugging Face Spaces
+Frontend            Lovable AI
+Frontend Hosting    Vercel
+RAG                 Not required for V1
+Vector Database     Not required for V1
+AI Avatar           Frontend-based interactive avatar
+Architecture        Modular monolith
+```
+
+# SECTION 15 — AVATAR BACKEND CONTRACT
+
+## Assigned coder
+
+Frontend Integration / Avatar Contract Coder
+
+## Goal
+
+Define the backend contract used by the Lovable avatar.
+
+The visual avatar itself is frontend-owned.
+
+## Backend Supplies
+
+```text
+text
+language
+persona
+avatar state
+emotion suggestion
+audio metadata if available
+conversation ID
+message ID
+```
+
+## Avatar States
+
+```text
+IDLE
+LISTENING
+THINKING
+SPEAKING
+```
+
+## Emotion Suggestions
+
+Keep small and controlled:
+
+```text
+friendly
+neutral
+concerned
+happy
+professional
+```
+
+## Response
+
+```json
+{
+  "conversation_id": "conv_001",
+  "message_id": "msg_001",
+  "text": "Rahul currently has 91.2% attendance.",
+  "language": "en-IN",
+  "persona": "parent",
+  "avatar": {
+    "state": "speaking",
+    "emotion": "friendly"
+  },
+  "audio": {
+    "url": null,
+    "duration": null
+  }
+}
+```
+
+## Rule
+
+Do not add a paid avatar provider to the backend architecture.
+
+The frontend may later animate:
+
+- blinking
+- mouth
+- head
+- speaking state
+- emotion
+
+## Acceptance
+
+Lovable should be able to render avatar state entirely from backend response metadata.
+
+---
