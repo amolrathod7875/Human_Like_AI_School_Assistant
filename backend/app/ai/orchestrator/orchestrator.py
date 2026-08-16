@@ -44,6 +44,15 @@ from app.providers.cohere.models import (
 )
 from app.providers.cohere.provider import get_llm_provider
 from app.schemas.collections import Conversation, Message
+from app.security import (
+    AUTHORIZATION_DENIED,
+    SUSPICIOUS_INPUT,
+    TOOL_REJECTED,
+    sanitize_model_output,
+    detect_suspicious_input,
+    log_security_event,
+    sanitize_tool_arguments,
+)
 from app.schemas.user import Role
 from app.services.conversation_service import (
     append_message,
@@ -90,6 +99,17 @@ async def handle_message(
     """
     if not context.active:
         raise AppError("User is not active", "FORBIDDEN", status_code=403)
+
+    # Suspicion flag (never a block): the authoritative controls are the tool
+    # allowlist and the authorization engine, which run regardless. We only
+    # record that an injection-like pattern was present in the user input.
+    suspicion = detect_suspicious_input(request.message)
+    if suspicion:
+        log_security_event(
+            SUSPICIOUS_INPUT,
+            f"user message pattern={suspicion} role={context.role.value} "
+            f"uid={context.user_id}",
+        )
 
     conversation = _load_conversation(context, request)
     conversation_id = conversation.id or ""
@@ -148,6 +168,7 @@ async def handle_message(
         decision=decision,
         executions=executions,
         text=text,
+        suspicion=suspicion,
     )
 
     return ChatResponse(
@@ -287,14 +308,21 @@ async def _execute_one(
 
     # Allowlist check first: an unregistered name is never executed.
     if get_tool(call.name) is None:
-        logger.warning("TOOL_REJECTED unregistered tool requested: %s", call.name)
+        log_security_event(
+            TOOL_REJECTED, f"unregistered tool requested={call.name} "
+            f"role={context.role.value}"
+        )
         return outcome(ToolCallStatus.UNAVAILABLE, MSG_UNAVAILABLE)
 
     try:
-        result = await execute_tool(call.name, context, call.arguments)
+        # Defensive cleanup before execution: redact any secret shape a model may
+        # have placed in the arguments. The tool's own schema validation still
+        # runs next. Authorization is enforced by the registry + Section 05.
+        sanitized_args = sanitize_tool_arguments(call.arguments)
+        result = await execute_tool(call.name, context, sanitized_args)
     except ToolAuthorizationError:
-        logger.warning(
-            "AUTHORIZATION_DENIED tool=%s role=%s", call.name, context.role.value
+        log_security_event(
+            AUTHORIZATION_DENIED, f"tool={call.name} role={context.role.value}"
         )
         return outcome(ToolCallStatus.DENIED, MSG_DENIED)
     except InvalidArgumentsError:
@@ -302,7 +330,7 @@ async def _execute_one(
         logger.info("TOOL_REJECTED invalid arguments tool=%s", call.name)
         return outcome(ToolCallStatus.NEEDS_CLARIFICATION, MSG_CLARIFY)
     except ToolNotFoundError:
-        logger.warning("TOOL_REJECTED unknown tool=%s", call.name)
+        log_security_event(TOOL_REJECTED, f"unknown tool={call.name}")
         return outcome(ToolCallStatus.UNAVAILABLE, MSG_UNAVAILABLE)
     except ToolResultValidationError:
         logger.error("Tool result validation failed tool=%s", call.name)
@@ -313,8 +341,8 @@ async def _execute_one(
     except AppError as exc:
         # e.g. a policy `enforce()` raised during a tool's authorize phase.
         if exc.status_code == 403:
-            logger.warning(
-                "AUTHORIZATION_DENIED tool=%s role=%s", call.name, context.role.value
+            log_security_event(
+                AUTHORIZATION_DENIED, f"tool={call.name} role={context.role.value}"
             )
             return outcome(ToolCallStatus.DENIED, MSG_DENIED)
         logger.error("Tool failed tool=%s code=%s", call.name, exc.code)
@@ -323,7 +351,10 @@ async def _execute_one(
         logger.exception("Unexpected tool failure tool=%s", call.name)
         return outcome(ToolCallStatus.ERROR, MSG_ERROR)
 
-    return outcome(ToolCallStatus.OK, result=_jsonable(result))
+    return outcome(
+        ToolCallStatus.OK,
+        result=sanitize_model_output(_jsonable(result)),
+    )
 
 
 # --------------------------------------------------------------- final answer
@@ -408,6 +439,7 @@ def _persist(
     decision: ModelDecision,
     executions: Sequence[ToolExecution],
     text: str,
+    suspicion: Optional[str] = None,
 ) -> str:
     """Store the user turn, any tool activity, and the assistant reply."""
     now = datetime.now(timezone.utc)
@@ -420,6 +452,9 @@ def _persist(
             intent=decision.intent.value,
             entities=decision.entities,
             timestamp=now,
+            # Audit-only marker that a prompt-injection pattern was present. It
+            # does not alter authorization or the stored user content.
+            metadata={"security_flag": suspicion} if suspicion else {},
         ),
         context,
     )
@@ -453,7 +488,9 @@ def _persist(
         conversation_id,
         Message(
             role="assistant",
-            content=text,
+            # Final text is sanitized defensively so a model that echoes a secret
+            # cannot store it in history.
+            content=sanitize_model_output(text) or "",
             intent=decision.intent.value,
             timestamp=now + timedelta(milliseconds=2),
         ),

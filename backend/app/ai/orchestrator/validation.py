@@ -10,6 +10,7 @@ from app.ai.orchestrator.intents import (
 from app.ai.orchestrator.schemas import ModelDecision, ProposedToolCall
 from app.core.logging import get_logger
 from app.providers.cohere.models import LLMResponse
+from app.security import sanitize_model_output
 
 logger = get_logger("app.ai.orchestrator.validation")
 
@@ -209,8 +210,12 @@ def parse_decision(response: LLMResponse, *, max_tool_calls: int) -> ModelDecisi
         intent=normalize_intent(payload.get("intent")),
         entities=sanitize_entities(payload.get("entities")),
         missing_information=_missing_information(payload.get("missing_information")),
-        clarification_question=_clip(payload.get("clarification_question")),
-        response_text=_clip(payload.get("response_text")),
+        # Model output is treated as untrusted: strip any secret shapes (e.g. a
+        # model echoing credentials) before it is reused as context or persisted.
+        clarification_question=sanitize_model_output(
+            _clip(payload.get("clarification_question"))
+        ),
+        response_text=sanitize_model_output(_clip(payload.get("response_text"))),
     )
 
     # Native provider tool calls win; the JSON block is the fallback channel.

@@ -61,6 +61,7 @@ class Message(BaseModel):
     entities: Dict[str, Any] = {}
     tool_calls: List[Any] = []
     tool_results: List[Any] = []
+    metadata: Dict[str, Any] = {}
 
 
 class SupportRequest(BaseModel):

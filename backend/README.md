@@ -82,6 +82,11 @@ backend/
   persisted messages → structured response with avatar hint), exposed as
   `POST /api/v1/ai/chat`. Never the authorization authority. See
   [`app/ai/orchestrator/README.md`](app/ai/orchestrator/README.md).
+- **AI security / prompt-injection** (`app/security`): explicit defenses for the
+  whole pipeline — `log_security_event` (markers `SECURITY_EVENT`,
+  `AUTHORIZATION_DENIED`, `TOOL_REJECTED`, `SUSPICIOUS_INPUT`), suspicious-input
+  detection, and secret redaction of model output and tool arguments. See
+  [`app/security/README.md`](app/security/README.md).
 
 ## Running locally
 
