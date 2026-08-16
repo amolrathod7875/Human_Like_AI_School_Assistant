@@ -50,6 +50,12 @@ backend/
   context builder (authoritative stored identity), and the 6 explicit policy
   functions + `enforce()`. See
   [`app/auth/authorization/README.md`](app/auth/authorization/README.md).
+- **conversation & memory engine** (`app/services/conversation_service`):
+  `create_conversation`, `get_conversation`, `append_message`,
+  `get_recent_messages`, `build_context`, and `ConversationContext`. Ownership
+  enforced via the authorization context; messages stored in the
+  `conversations/{id}/messages` subcollection. See
+  [`app/services/README.md`](app/services/README.md).
 
 ## Running locally
 

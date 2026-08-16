@@ -65,3 +65,43 @@ verifier and this repository) so the app is initialized only once.
 `tests/test_user_service.py` covers: each role loads correctly, parent–child
 resolution, teacher–class resolution, inactive-user rejection, stored role not
 overridable by a fake value, and lookup by Firebase UID (all via a fake repo).
+
+## Conversation & Memory Engine (`app.services.conversation_service`)
+
+Stores conversations and makes structured context available to the AI
+orchestrator. Conversations live in the `conversations` collection; messages in
+the `conversations/{conversation_id}/messages` subcollection (via
+`MessageRepository`).
+
+Service functions (each takes the caller's `AuthorizationContext`):
+
+```python
+create_conversation(context, language="en-IN", metadata=None) -> Conversation
+get_conversation(conversation_id, context)                  -> Conversation
+append_message(conversation_id, message, context)           -> Message
+get_recent_messages(conversation_id, context, limit=20)     -> list[Message]
+build_context(conversation_id, context, limit=20)           -> ConversationContext
+```
+
+`ConversationContext` carries `conversation_id`, `recent_messages` (most-recent
+first), `language`, aggregated `known_entities`, and `previous_tool_results` so
+follow-up questions can rely on prior context.
+
+### Security
+- A user may only access **their own** conversations; `PRINCIPAL` (school-wide)
+  may access any per the administrative policy. Others get `FORBIDDEN`.
+- Ownership is enforced on every read **and** write (append).
+- The conversation's `role` is taken from the stored `AuthorizationContext`,
+  never from the client.
+
+### Repositories / injection
+- `ConversationRepository` (Section 04) backs `conversations`.
+- `MessageRepository` (subcollection) backs `messages`; injectable via
+  `set_message_repository_factory`.
+- `set_conversation_repository` / `set_message_repository_factory` allow tests
+  to inject fakes.
+
+`tests/test_conversation_service.py` covers create, append, recent retrieval
+(most-recent-first), ownership enforcement (and principal override), and
+context generation including the follow-up scenario (entities/tool results
+carried into `ConversationContext`).

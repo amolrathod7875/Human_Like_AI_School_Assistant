@@ -143,6 +143,7 @@ class FirestoreRepository(Generic[T]):
         *,
         filters: Optional[Sequence[Tuple[str, str, Any]]] = None,
         order_by: Optional[str] = None,
+        desc: bool = False,
         page_size: int = 20,
         start_after: Optional[str] = None,
     ) -> Page[T]:
@@ -151,7 +152,12 @@ class FirestoreRepository(Generic[T]):
             for field, op, value in filters or []:
                 query = query.where(field, op, value)
             if order_by:
-                query = query.order_by(order_by)
+                if desc:
+                    from firebase_admin import firestore as fs
+
+                    query = query.order_by(order_by, direction=fs.Query.DESCENDING)
+                else:
+                    query = query.order_by(order_by)
             if start_after:
                 query = query.start_after(start_after)
             query = query.limit(page_size + 1)

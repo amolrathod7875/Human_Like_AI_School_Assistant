@@ -4,6 +4,7 @@ from app.repositories.firestore import (
     ClassRepository,
     ConversationRepository,
     FirestoreRepository,
+    MessageRepository,
     RepositoryError,
     StudentRepository,
     SupportRequestRepository,
@@ -28,6 +29,7 @@ __all__ = [
     "ClassRepository",
     "AttendanceRepository",
     "ConversationRepository",
+    "MessageRepository",
     "SupportRequestRepository",
     "AuditLogRepository",
 ]

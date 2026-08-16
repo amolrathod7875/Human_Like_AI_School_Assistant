@@ -40,11 +40,27 @@ class AttendanceRecord(BaseModel):
 class Conversation(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
-    id: str
+    id: Optional[str] = ""
     user_id: str
     title: Optional[str] = None
+    role: Optional[str] = None  # STUDENT / PARENT / TEACHER / PRINCIPAL
+    language: Optional[str] = None  # e.g. "en-IN"
+    metadata: Dict[str, Any] = {}
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+class Message(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    id: Optional[str] = ""
+    role: str  # user | assistant | system | tool
+    content: str
+    timestamp: Optional[datetime] = None
+    intent: Optional[str] = None
+    entities: Dict[str, Any] = {}
+    tool_calls: List[Any] = []
+    tool_results: List[Any] = []
 
 
 class SupportRequest(BaseModel):

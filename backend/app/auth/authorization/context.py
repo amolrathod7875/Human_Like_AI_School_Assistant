@@ -3,7 +3,6 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
 
 from app.schemas.user import Role, UserProfile
-from app.services.user_service import get_user_by_firebase_uid
 
 
 class RelationshipData(BaseModel):
@@ -92,6 +91,7 @@ def get_authorization_context(authenticated_user) -> AuthorizationContext:
     token. Raises AppError(FORBIDDEN) when no profile exists.
     """
     from app.core.errors import AppError
+    from app.services.user_service import get_user_by_firebase_uid
 
     profile = get_user_by_firebase_uid(authenticated_user.firebase_uid)
     if profile is None:
