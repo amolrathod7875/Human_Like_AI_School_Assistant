@@ -1,5 +1,16 @@
+from app.repositories.firestore import (
+    AttendanceRepository,
+    AuditLogRepository,
+    ClassRepository,
+    ConversationRepository,
+    FirestoreRepository,
+    RepositoryError,
+    StudentRepository,
+    SupportRequestRepository,
+    UserRepository as FirestoreUserRepository,
+    map_firestore_error,
+)
 from app.repositories.user_repository import (
-    FirestoreUserRepository,
     UserRepository,
     get_user_repository,
     set_user_repository,
@@ -10,4 +21,13 @@ __all__ = [
     "FirestoreUserRepository",
     "get_user_repository",
     "set_user_repository",
+    "FirestoreRepository",
+    "RepositoryError",
+    "map_firestore_error",
+    "StudentRepository",
+    "ClassRepository",
+    "AttendanceRepository",
+    "ConversationRepository",
+    "SupportRequestRepository",
+    "AuditLogRepository",
 ]

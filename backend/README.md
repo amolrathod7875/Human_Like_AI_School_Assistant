@@ -42,6 +42,10 @@ backend/
 - **user service** (`app/services`): profiles, roles, and relationships backed by the
   Firestore `users` collection, behind a `UserRepository` adapter. See
   [`app/services/README.md`](app/services/README.md).
+- **firestore repository layer** (`app/repositories`): generic typed
+  `FirestoreRepository[T]` base (CRUD, mapping, timestamps, pagination, error
+  mapping) plus the 7 concrete repositories and `get_firestore_client()`. See
+  [`app/repositories/README.md`](app/repositories/README.md).
 
 ## Running locally
 
