@@ -100,6 +100,15 @@ backend/
   `POST /api/v1/voice/webhook` (Vapi server URL) and
   `POST /api/v1/voice/respond` (bearer-authenticated). See
   [`app/providers/vapi/README.md`](app/providers/vapi/README.md).
+- **Avatar backend contract** (`app/schemas/avatar`, `app/services/avatar_service`,
+  `app/api/v1/avatar`): the frontend-owned Lovable avatar's contract. The backend
+  only supplies metadata — `text`, `language`, `persona`, avatar `state`
+  (`idle`/`listening`/`thinking`/`speaking`), `emotion` (`friendly`/`neutral`/
+  `concerned`/`happy`/`professional`), `conversation_id`, `message_id`, and
+  optional `audio` metadata. No paid avatar provider is added. Exposed as
+  `GET /api/v1/avatar/contract` (static spec: states, emotions, example) and
+  `POST /api/v1/avatar/contract` (runs a turn and returns the canonical
+  `AvatarContractResponse`).
 
 ## Running locally
 
