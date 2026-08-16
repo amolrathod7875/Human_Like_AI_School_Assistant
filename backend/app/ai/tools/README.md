@@ -75,3 +75,25 @@ result = await execute_tool("attendance_view", context, {"student": "Rahul"})
 `tests/test_ai_tool_registry.py` covers: register/lookup, unknown tool rejected,
 invalid arguments rejected, successful execution, authorization (both registry
 hook and tool-level `authorize`), and output result validation.
+
+## Escalation tools (Section 13)
+
+Two BaseTool adapters wrap the human-support escalation service and reuse the
+Section 05 policies in their uthorize path:
+
+- create_teacher_contact_request — parent/teacher → teacher contact. Arguments:
+  student_id, 
+eason, and an explicit confirmed flag (the human hand-off is
+  not dispatched until the user confirms). Returns the persisted request
+  (
+equest_id, 	arget_type, status).
+- create_management_contact_request — teacher/principal → management contact.
+  Arguments: 
+eason, optional student_id, and confirmed.
+
+Both call pp.services.escalation_service, which persists to the
+support_requests collection and asks the (mock) human-support adapter for a
+CONFIRMED/FAILED verdict. The tool returns that status so the orchestrator
+only relays a successful hand-off when the adapter actually confirmed it. Tests:
+	ests/test_escalation_service.py (tool behavior) and
+	ests/test_escalation_api.py (full chat + REST flow).

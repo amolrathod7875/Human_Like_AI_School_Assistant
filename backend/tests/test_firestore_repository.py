@@ -283,11 +283,15 @@ def test_conversation_and_support_request_queries():
 
     sr = SupportRequestRepository(client=client())
     sr.create(
-        SupportRequest(id="r1", user_id="u1", subject="S", message="M", status="OPEN"),
+        SupportRequest(
+            id="r1", user_id="u1", requested_by="u1", requester_role="PARENT",
+            target_type="TEACHER", student_id="s1", reason="Attendance",
+            status="PENDING",
+        ),
         doc_id="r1",
     )
     assert sr.list_by_user("u1").items[0].id == "r1"
-    assert sr.list_by_status("OPEN").items[0].id == "r1"
+    assert sr.list_by_status("PENDING").items[0].id == "r1"
 
 
 def test_audit_log_record():

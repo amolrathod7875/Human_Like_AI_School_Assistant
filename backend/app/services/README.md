@@ -173,3 +173,37 @@ their `authorize` hook: `get_own_attendance`, `get_child_attendance`,
 All routes resolve the caller's `AuthorizationContext` from the verified Firebase
 token; authorization is enforced in the service layer. See
 `tests/test_attendance_api.py`.
+
+### Escalation / human-support service (pp.services.escalation_service)
+
+Section 13 — teacher/management support-request workflow. Persists to the
+support_requests collection (schema in pp.schemas.collections.SupportRequest)
+with status PENDING → CONFIRMED | FAILED | CANCELLED, and dispatches to a
+human-support adapter. The adapter is behind the HumanSupportAdapter protocol;
+the default MockHumanSupportAdapter returns CONFIRMED (no paid provider). The
+service enforces Section 05 policies (can_create_teacher_escalation =
+parent→own child's teacher or teacher→their student; can_create_management_escalation
+= teacher/principal) and only stores the status the adapter returns.
+
+Service interface:
+
+`python
+await request_teacher_contact(context, student_id, reason) -> SupportRequest
+await request_management_contact(context, reason, student_id=None) -> SupportRequest
+await get_request(request_id, context) -> SupportRequest  # owner or principal
+`
+
+
+equest_teacher_contact / 
+equest_management_contact raise AppError(FORBIDDEN)
+when the policy denies. get_request allows the requester or any principal and
+raises NOT_FOUND / FORBIDDEN otherwise. The persisted status is the single
+source of truth the AI may relay: only CONFIRMED justifies saying a human was
+contacted.
+
+### API (pp.api.v1.escalation)
+- POST /api/v1/escalation/request — body { target_type: TEACHER|MANAGEMENT,
+  reason, student_id? }. Returns the created request and status.
+- GET  /api/v1/escalation/{request_id} — request status (owner or principal).
+
+Tests: 	ests/test_escalation_service.py, 	ests/test_escalation_api.py.

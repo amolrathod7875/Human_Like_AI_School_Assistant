@@ -71,20 +71,29 @@ def can_view_school_analytics(
 def can_create_teacher_escalation(
     context: AuthorizationContext, student_id: str
 ) -> AuthorizationResult:
+    # Parents escalate to their child's teacher; teachers escalate for a student
+    # in their authorized classes.
     if not context.active:
         return _deny("INACTIVE_USER", "User is not active")
-    if context.role != Role.TEACHER:
-        return _deny("ROLE_NOT_ALLOWED", "Action not allowed for this role")
-    if student_id not in context.relationship.authorized_student_ids:
-        return _deny("NOT_YOUR_STUDENT", "Student not in your authorized classes")
-    return _allow()
+    if context.role == Role.PARENT:
+        if student_id not in context.relationship.child_ids:
+            return _deny("NOT_YOUR_CHILD", "Not authorized for the requested child")
+        return _allow()
+    if context.role == Role.TEACHER:
+        if student_id not in context.relationship.authorized_student_ids:
+            return _deny("NOT_YOUR_STUDENT", "Student not in your authorized classes")
+        return _allow()
+    return _deny("ROLE_NOT_ALLOWED", "Action not allowed for this role")
 
 
 def can_create_management_escalation(
     context: AuthorizationContext,
 ) -> AuthorizationResult:
+    # Teachers escalate to management; principals already are management.
     if not context.active:
         return _deny("INACTIVE_USER", "User is not active")
-    if context.role != Role.PRINCIPAL:
-        return _deny("ROLE_NOT_ALLOWED", "Action not allowed for this role")
-    return _allow()
+    if context.role == Role.TEACHER:
+        return _allow()
+    if context.role == Role.PRINCIPAL:
+        return _allow()
+    return _deny("ROLE_NOT_ALLOWED", "Action not allowed for this role")

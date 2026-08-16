@@ -87,6 +87,12 @@ backend/
   `AUTHORIZATION_DENIED`, `TOOL_REJECTED`, `SUSPICIOUS_INPUT`), suspicious-input
   detection, and secret redaction of model output and tool arguments. See
   [`app/security/README.md`](app/security/README.md).
+- **Escalation / human support** (`app.services.escalation_service`): teacher/
+  management support-request workflow. Persists to `support_requests` and dispatches
+  via a `HumanSupportAdapter` (mock by default — no paid provider). Exposed as
+  `POST /api/v1/escalation/request` and `GET /api/v1/escalation/{request_id}`, and
+  as the `create_teacher_contact_request` / `create_management_contact_request`
+  orchestrator tools. See [`app/services/README.md`](app/services/README.md).
 
 ## Running locally
 

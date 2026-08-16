@@ -69,9 +69,13 @@ class SupportRequest(BaseModel):
 
     id: str
     user_id: str
-    subject: str
-    message: str
-    status: str = "OPEN"  # OPEN / IN_PROGRESS / RESOLVED
+    requested_by: str
+    requester_role: str
+    target_type: str  # TEACHER | MANAGEMENT
+    target_id: Optional[str] = None
+    student_id: Optional[str] = None
+    reason: str
+    status: str = "PENDING"  # PENDING | CONFIRMED | FAILED | CANCELLED
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

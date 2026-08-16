@@ -72,9 +72,10 @@ STUDENT_REFERENCE_INTENTS: FrozenSet[Intent] = frozenset(
 # prompting only — it reduces what the model is even offered.
 ROLE_TOOLS: Dict[Role, Tuple[str, ...]] = {
     Role.STUDENT: ("get_own_attendance",),
-    Role.PARENT: ("get_child_attendance",),
-    Role.TEACHER: ("mark_attendance",),
-    Role.PRINCIPAL: ("get_overall_attendance",),
+    Role.PARENT: ("get_child_attendance", "create_teacher_contact_request"),
+    Role.TEACHER: ("mark_attendance", "create_teacher_contact_request",
+                   "create_management_contact_request"),
+    Role.PRINCIPAL: ("get_overall_attendance", "create_management_contact_request"),
 }
 
 _SCOPED_TOOLS: FrozenSet[str] = frozenset(
