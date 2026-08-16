@@ -39,6 +39,9 @@ backend/
 
 - **auth** (`app/auth`): Firebase ID-token verification, `AuthenticatedUser`, and the
   reusable `get_authenticated_user` dependency. See [`app/auth/README.md`](app/auth/README.md).
+- **user service** (`app/services`): profiles, roles, and relationships backed by the
+  Firestore `users` collection, behind a `UserRepository` adapter. See
+  [`app/services/README.md`](app/services/README.md).
 
 ## Running locally
 
