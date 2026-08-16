@@ -46,6 +46,10 @@ backend/
   `FirestoreRepository[T]` base (CRUD, mapping, timestamps, pagination, error
   mapping) plus the 7 concrete repositories and `get_firestore_client()`. See
   [`app/repositories/README.md`](app/repositories/README.md).
+- **authorization engine** (`app/auth/authorization`): `AuthorizationContext`,
+  context builder (authoritative stored identity), and the 6 explicit policy
+  functions + `enforce()`. See
+  [`app/auth/authorization/README.md`](app/auth/authorization/README.md).
 
 ## Running locally
 
